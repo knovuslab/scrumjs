@@ -2,8 +2,8 @@ var http = require('http')
 var fs = require('fs')
 var path = require('path')
 var PORT = 6767
-var tokens = ['basliel']
-let users = ['basliel']
+var tokens = ['8b8a77a2e','04eb6c0c2','bdc069500', '5f3a25c40']
+let users = ['Bekalu','Basliel', 'Elshadai', 'Eyob']
 function handle_http (request, response) {
   console.log('request ', request.url)
   let token = /^\/([A-z\d]+)\/?([A-z\d]+)?$/.exec(request.url)

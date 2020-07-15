@@ -1,9 +1,21 @@
 var http = require('http')
+const sqlite3 = require('sqlite3').verbose()
+
+const db = new sqlite3.Database(
+  './users.db',
+  sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE
+)
 var fs = require('fs')
 var path = require('path')
+const { callbackify } = require('util')
 var PORT = 6767
-var tokens = ['8b8a77a2e','04eb6c0c2','bdc069500', '5f3a25c40']
-let users = ['Bekalu','Basliel', 'Elshadai', 'Eyob']
+var tokens = ['8b8a77a2e', '04eb6c0c2', 'bdc069500', '5f3a25c40']
+let users = ['Bekalu', 'Basliel', 'Elshadai', 'Eyob']
+
+var stmt = db.prepare(
+  "create table IF NOT EXISTS 'tasks'(id INTEGER PRIMARY KEY AUTOINCREMENT, title varchar(32) NOT NULL, user_name varchar(32) NOT NULL, description text, progress INTEGER DEFAULT 0, created_date varchar(32), modified_date varchar(32))"
+)
+
 function handle_http (request, response) {
   console.log('request ', request.url)
   let token = /^\/([A-z\d]+)\/?([A-z\d]+)?$/.exec(request.url)
@@ -18,8 +30,41 @@ function handle_http (request, response) {
   if (filePath == './') {
     filePath = './index.html'
   }
-  if (filePath == './save') {
-    fetchPostData(request, response)
+  if (filePath == './create') {
+    fetchPostData(request, response, function (post_data) {
+      if (!post_data.progress) {
+        makeError(response, 200, 1001, 'progress is required')
+        return
+      }
+      if (!post_data.title) {
+        makeError(response, 200, 1002, 'title is required')
+        return
+      }
+      if (!post_data.description) {
+        makeError(response, 200, 1003, 'description is required')
+        return
+      }
+      if (!post_data.username) {
+        makeError(response, 200, 1004, 'username is required')
+        return
+      }
+      let sql =
+        'INSERT INTO users(title, user_name, description, progress, created_date, modified_date) VALUES(?,?,?,?,datetime("now"),datetime("now"))'
+      console.log(sql)
+      var stmt = db.prepare(sql)
+      stmt.get(
+        [
+          post_data.title,
+          post_data.username,
+          post_data.description,
+          post_data.progress
+        ],
+        err => {
+          console.log(err)
+          send_success(response, 'Task Created')
+        }
+      )
+    })
   }
 
   var extname = String(path.extname(filePath)).toLowerCase()
@@ -66,8 +111,27 @@ var s = http.createServer(handle_http)
 s.listen(PORT)
 console.log(`Initializing server complete http://localhost/${PORT}`)
 
-function send_success (res, ori_out, amut, total) {
+function send_success (res, msg) {
   var d = new Date()
+  res.writeHead(http_code, { 'Content-Type': 'application/json' })
+  res.end(
+    JSON.stringify({
+      success: true,
+      msg: msg,
+      date:
+        d.getHours() +
+        ':' +
+        d.getMinutes() +
+        ':' +
+        d.getSeconds() +
+        ' ' +
+        d.getMonth() +
+        '/' +
+        d.getDate() +
+        '/' +
+        d.getFullYear()
+    })
+  )
 }
 
 function makeError (res, http_code, err_code, err_msg) {
@@ -92,7 +156,7 @@ function makeError (res, http_code, err_code, err_msg) {
     })
   )
 }
-function fetchPostData (request, response) {
+function fetchPostData (request, response, callback) {
   var post_data = ''
   /*  console.log('===========+++++++++===========')
     console.log('-------Incoming Request --------')
@@ -119,5 +183,6 @@ function fetchPostData (request, response) {
     }
     post_data = parse(post_data)
     console.log(post_data)
+    callback(post_data)
   })
 }

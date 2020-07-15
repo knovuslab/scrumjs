@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/knovuslab/scrumjs/issues"
   },
-  "homepage": "https://github.com/knovuslab/scrumjs#readme"
+  "homepage": "https://github.com/knovuslab/scrumjs#readme",
+  "dependencies": {
+    "sqlite3": "^5.0.0"
+  }
 }

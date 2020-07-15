@@ -9,8 +9,9 @@ var fs = require('fs')
 var path = require('path')
 const { callbackify } = require('util')
 var PORT = 6767
-var tokens = ['8b8a77a2e', '04eb6c0c2', 'bdc069500', '5f3a25c40']
-let users = ['Bekalu', 'Basliel', 'Elshadai', 'Eyob']
+const config = require('./config.json')
+var tokens = config.keys
+let users = config.users
 
 var stmt = db.prepare(
   "create table IF NOT EXISTS 'tasks'(id INTEGER PRIMARY KEY AUTOINCREMENT, title varchar(32) NOT NULL, user_name varchar(32) NOT NULL, description text, progress INTEGER DEFAULT 0, created_date varchar(32), modified_date varchar(32))"

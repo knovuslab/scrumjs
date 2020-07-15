@@ -1,16 +1,27 @@
 var http = require('http')
 var fs = require('fs')
 var path = require('path')
+var PORT = 6767
+var tokens = ['basliel']
+let users = ['basliel']
 function handle_http (request, response) {
   console.log('request ', request.url)
+  let token = /^\/([A-z\d]+)\/?([A-z\d]+)?$/.exec(request.url)
 
-  var filePath = '.' + request.url
+  if (!token || tokens.indexOf(token[1]) == -1) {
+    response.writeHead(403, { 'Content-Type': 'application/json' })
+    response.end("{'msg':'Not Autherized'}")
+    return
+  }
+  let user = users[tokens.indexOf(token[1])]
+  var filePath = './' + (!token[2] ? '' : token[2])
   if (filePath == './') {
     filePath = './index.html'
   }
   if (filePath == './save') {
     fetchPostData(request, response)
   }
+
   var extname = String(path.extname(filePath)).toLowerCase()
   var mimeTypes = {
     '.html': 'text/html',
@@ -52,8 +63,8 @@ function handle_http (request, response) {
   })
 }
 var s = http.createServer(handle_http)
-s.listen(6767)
-console.log('Initializing server complete')
+s.listen(PORT)
+console.log(`Initializing server complete http://localhost/${PORT}`)
 
 function send_success (res, ori_out, amut, total) {
   var d = new Date()

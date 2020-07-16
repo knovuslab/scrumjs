@@ -4,16 +4,17 @@
 <head>
 	<meta charset="UTF-8" lang="en">
 	<title>scrub</title>
-	<link rel="stylesheet" href="./css/style.css"><!-- all css file inside /css can be accessed without the folder name -->
+	<link rel="stylesheet" href="./css/style.css">
 
 </head>
 
-<body onload="addListeners()">
+<body onload="init()">
 	<div class="body">
+		<div class="loading"></div>
 		<div class="add" onclick="openForm()" style="width: 40px; height: 40px; margin: 0;">+</div>
 
 		<section class="form-popup" id="addForm">
-			<span class="closebtn cancel btn" onclick="closeForm()">&#215</span>
+			<span class="closebtn cancel btn" onclick="closeForm()">&#215;</span>
 			<form class="form-container">
 				<h1 class="addTask">Add Task</h1>
 
@@ -35,50 +36,55 @@
 		<div class="panels">
 			<div class="panel panel1 puts">
 				<h2>Puts</h2>
-				<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-puts">
-					<div class="card" id="uniqueid" draggable="true" ondragstart="drag(event)">
-						<h1 class="content-title">Title here</h1>
-						<p class="content-body">Some text about task</p>
-					</div>
+				<div data-progress='0' ondragover="allowDrop(event)" ondrop="drop(event)" id="content-puts">
 				</div>
 
 			</div>
 			<div class="panel panel2 ice-box">
 				<h2>Ice-box</h2>
-				<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-ice-box"></div>
+				<div data-progress='1' ondragover="allowDrop(event)" ondrop="drop(event)" id="content-ice-box"></div>
 			</div>
 			<div class="panel panel3 in-progress">
 				<h2>In-progress</h2>
-				<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-in-progress"></div>
+				<div data-progress='2' ondragover="allowDrop(event)" ondrop="drop(event)" id="content-in-progress">
+				</div>
 			</div>
 			<div class="panel panel4 emergency">
 				<h2>Emergency</h2>
-				<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-emergency"></div>
+				<div data-progress='3' ondragover="allowDrop(event)" ondrop="drop(event)" id="content-emergency"></div>
 			</div>
 			<div class="panel panel5 testing">
 				<h2>Testing</h2>
-				<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-testing"></div>
+				<div data-progress='4' ondragover="allowDrop(event)" ondrop="drop(event)" id="content-testing"></div>
 			</div>
 			<div class="panel panel6 finished">
 				<h2>Finsihed</h2>
-				<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-finished"></div>
+				<div data-progress='5' ondragover="allowDrop(event)" ondrop="drop(event)" id="content-finished"></div>
 			</div>
 		</div>
 	</div>
+	<div class="user">Hello, <span id="username"></span></div>
+	<script src="/js/main.js"></script>
+	<script>
+		const panels = document.querySelectorAll('.panel');
+
+		function toggleOpen() {
+			this.classList.toggle('open');
+		}
+
+		function toggleActive(e) {
+			if (e.propertyName.includes('flex')) this.classList.toggle('open-active');
+		}
+		panels.forEach((panel) => panel.addEventListener('click', toggleOpen))
+		panels.forEach((panel) => panel.addEventListener('transitionend', toggleActive));
+
+		function init() {
+			addListeners();
+			displayCards();
+			getUser();
+		}
+	</script>
 </body>
-<script src="./js/main.js"></script>
-<script>
-	const panels = document.querySelectorAll('.panel');
 
-	function toggleOpen() {
-		this.classList.toggle('open');
-	}
-
-	function toggleActive(e) {
-		if (e.propertyName.includes('flex')) this.classList.toggle('open-active');
-	}
-	panels.forEach((panel) => panel.addEventListener('click', toggleOpen))
-	panels.forEach((panel) => panel.addEventListener('transitionend', toggleActive));
-</script>
 
 </html>

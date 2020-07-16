@@ -13,8 +13,9 @@ const app = express()
 const PORT = process.env.PORT || 6767
 
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(express.static('public/css'))
-app.use(express.static('public/js'))
+app.use('/css', express.static('public/css'))
+app.use('/js', express.static('public/js'))
+app.use('/img', express.static('public/img'))
 
 init()
 
@@ -49,7 +50,9 @@ app.post('/*/create/?', (req, res) => {
           makeError(res, 1006, err)
           return console.log(err)
         }
-        send_success(res, 'Task Created')
+        db.get('SELECT last_insert_rowid() as id', function (err, row) {
+          send_success(res, 'Task Created', { id: row['id'] })
+        })
       }
     )
   })
@@ -74,7 +77,7 @@ app.post('/*/update_progress', (req, res) => {
       'UPDATE tasks SET  progress = ?, user_name = ?, modified_date = datetime("now") where id=?'
     console.log(sql, req.body.progress, user, req.body.id)
     var stmt = db.prepare(sql)
-    stmt.get(sql, [req.body.progress, user, req.body.id], err => {
+    stmt.run([req.body.progress, user, req.body.id], err => {
       if (err) {
         makeError(res, 1007, err)
         return console.log(err)

@@ -143,7 +143,6 @@ app.post('/*/cards', (req, res) => {
 })
 
 function init () {
-  db.run("drop table tasks")
   var stmt = db.prepare(
     "create table IF NOT EXISTS 'tasks'(id INTEGER PRIMARY KEY AUTOINCREMENT, title varchar(32) NOT NULL, user_name varchar(32) NOT NULL, description text, progress INTEGER DEFAULT 0, created_date varchar(32), modified_date varchar(32))"
   )

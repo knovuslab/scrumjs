@@ -63,7 +63,7 @@ function addTask () {
 function post (url, data, callback) {
   showLoading()
   const Http = new XMLHttpRequest()
-  Http.open('POST', window.location.href + url)
+  Http.open('POST', window.location.pathname + url)
   Http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
   Http.send(data)
   Http.onreadystatechange = e => {

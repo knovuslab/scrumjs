@@ -1,4 +1,4 @@
-const config = require('./config.json')
+const config = require('../config.json')
 var tokens = config.keys
 let users = config.users
 

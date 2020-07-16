@@ -2,16 +2,17 @@ var http = require('http')
 const sqlite3 = require('sqlite3').verbose()
 const bodyParser = require('body-parser')
 const db = new sqlite3.Database(
-  './users.db',
+  './db/users.db',
   sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE
 )
-const { auth } = require('./auth')
-const { getDate } = require('./utli')
+const { auth } = require('./tools/auth')
+const { getDate } = require('./tools/utli')
 const { join } = require('path')
-const app = require('express')()
+const express = require('express')
+const app = express()
 
 app.use(bodyParser.urlencoded({ extended: true }))
-
+app.use(express.static('public'))
 var PORT = 6767
 var stmt = db.prepare(
   "create table IF NOT EXISTS 'tasks'(id INTEGER PRIMARY KEY AUTOINCREMENT, title varchar(32) NOT NULL, user_name varchar(32) NOT NULL, description text, progress INTEGER DEFAULT 0, created_date varchar(32), modified_date varchar(32))"

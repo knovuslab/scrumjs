@@ -15,12 +15,12 @@
 
 		<section class="form-popup" id="addForm">
 			<span class="closebtn cancel btn" onclick="closeForm()">&#215;</span>
-			<form class="form-container">
+			<div class="form-container">
 				<h1 class="addTask">Add Task</h1>
 
 				<input type="text" name="task" id="task" placeholder="Task" required>
 				<textarea type="text" name="description" id="description" placeholder="Explanation"></textarea><br>
-				<label for="status" id="status">Status</label>
+				<label for="status" id="task-status">Status</label>
 				<select name="status" id="status" required>
 
 					<option value="puts">Puts</option>
@@ -30,8 +30,8 @@
 					<option value="testing">Testing</option>
 					<option value="finished">Finished</option>
 				</select>
-				<button type="submit" class="btn submit">Add</button>
-			</form>
+				<button onclick="addTask()" class="btn submit">Add</button>
+			</div>
 		</section>
 		<div class="panels">
 			<div class="panel panel1 puts">
@@ -79,7 +79,6 @@
 		panels.forEach((panel) => panel.addEventListener('transitionend', toggleActive));
 
 		function init() {
-			addListeners();
 			displayCards();
 			getUser();
 		}

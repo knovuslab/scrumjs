@@ -35,18 +35,18 @@ function drop (ev) {
   )
 }
 
-function addTask (form) {
+function addTask () {
+  const task = document.getElementById('task').value
+  const description = document.getElementById('description').value
   post(
     '/create',
-    `title=${task}&description=${description}&progress=${categories.indexOf(
-      status
-    )}`,
+    `title=${task}&description=${description}&progress=${
+      categories.indexOf(status) == -1 ? 0 : categories.indexOf(status)
+    }`,
     function (res) {
-      const task = form.elements['task'].value
-      const description = form.elements['description'].value
-      const status = form.elements['status'].value
-      const container = document.getElementsByClassName(status)[0]
-      const childDiv = container.getElementsByTagName('div')[0]
+      const status = document.getElementById('status').value
+      console.log(status)
+      const childDiv = document.getElementById('content-' + status)
       const div = document.createElement('div')
       div.innerHTML =
         `<div class="card" draggable="true" id="` +
@@ -96,8 +96,9 @@ function displayCards () {
       const task = data.title
       const description = data.description
       const status = categories[data.progress]
-      const container = document.getElementsByClassName(status)[0]
-      const childDiv = container.getElementsByTagName('div')[0]
+      const childDiv = document.getElementById('content-' + status)
+      console.log(status)
+      console.log(childDiv)
       const div = document.createElement('div')
       div.innerHTML =
         `<div class="card" draggable="true" id="` +

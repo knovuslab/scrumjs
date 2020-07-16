@@ -58,12 +58,12 @@ app.post('/*/create/?', (req, res) => {
   })
 })
 
-app.post('/*/user', (req, res) => {
+app.post('/*/user/?', (req, res) => {
   auth(req, res, user => {
     send_success(res, 'Login in user', { username: user })
   })
 })
-app.post('/*/update_progress', (req, res) => {
+app.post('/*/update_progress/?', (req, res) => {
   auth(req, res, user => {
     if (!req.body.progress) {
       makeError(res, 1005, 'progress is required')
@@ -86,7 +86,7 @@ app.post('/*/update_progress', (req, res) => {
     })
   })
 })
-app.post('/*/update_card', (req, res) => {
+app.post('/*/update_card/?', (req, res) => {
   auth(req, res, user => {
     if (!req.body.progress) {
       makeError(res, 1005, 'progress is required')
@@ -127,7 +127,7 @@ app.post('/*/update_card', (req, res) => {
     )
   })
 })
-app.post('/*/cards', (req, res) => {
+app.post('/*/cards/?', (req, res) => {
   auth(req, res, user => {
     let sql = "SELECT * FROM 'tasks'"
     console.log(sql)

@@ -10,7 +10,7 @@ const { send_success, makeError } = require('./tools/utli')
 const { join } = require('path')
 const express = require('express')
 const app = express()
-const PORT =  process.env.PORT || 5252
+const PORT = process.env.PORT || 6767
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static('public/css'))
@@ -39,15 +39,16 @@ app.post('/*/create/?', (req, res) => {
       makeError(res, 1003, 'description is required')
       return
     }
-    let sql =
-      'INSERT INTO tasks(title, user_name, description, progress, created_date, modified_date) VALUES(?,?,?,?,datetime("now"),datetime("now"))'
+    let sql = `INSERT INTO tasks(title, user_name, description, progress, created_date, modified_date) VALUES(?,?,?,?,datetime("now"),datetime("now"))`
     console.log(sql)
     var stmt = db.prepare(sql)
-    stmt.get(
-      sql,
+    stmt.run(
       [req.body.title, user, req.body.description, req.body.progress],
       err => {
-        if (err) return console.log(err)
+        if (err) {
+          makeError(res, 1006, err)
+          return console.log(err)
+        }
         send_success(res, 'Task Created')
       }
     )
@@ -57,6 +58,84 @@ app.post('/*/create/?', (req, res) => {
 app.post('/*/user', (req, res) => {
   auth(req, res, user => {
     send_success(res, 'Login in user', { username: user })
+  })
+})
+app.post('/*/update_progress', (req, res) => {
+  auth(req, res, user => {
+    if (!req.body.progress) {
+      makeError(res, 1005, 'progress is required')
+      return
+    }
+    if (!req.body.id) {
+      makeError(res, 1005, 'id of the card  is required')
+      return
+    }
+    let sql =
+      'UPDATE tasks SET  progress = ?, user_name = ?, modified_date = datetime("now") where id=?'
+    console.log(sql, req.body.progress, user, req.body.id)
+    var stmt = db.prepare(sql)
+    stmt.get(sql, [req.body.progress, user, req.body.id], err => {
+      if (err) {
+        makeError(res, 1007, err)
+        return console.log(err)
+      }
+      send_success(res, 'Task Progress Updated')
+    })
+  })
+})
+app.post('/*/update_card', (req, res) => {
+  auth(req, res, user => {
+    if (!req.body.progress) {
+      makeError(res, 1005, 'progress is required')
+      return
+    }
+    if (!req.body.id) {
+      makeError(res, 1005, 'id of the card  is required')
+      return
+    }
+    if (!req.body.title) {
+      makeError(res, 1005, 'TItle of the card  is required')
+      return
+    }
+    if (!req.body.description) {
+      makeError(res, 1005, 'description of the card  is required')
+      return
+    }
+    let sql =
+      'UPDATE tasks SET  title= ?, description = ?, progress = ?, user_name = ?, modified_date = datetime("now") where id=?'
+    console.log(sql)
+    var stmt = db.prepare(sql)
+    stmt.get(
+      sql,
+      [
+        req.body.title,
+        req.body.description,
+        req.body.progress,
+        user,
+        req.body.id
+      ],
+      err => {
+        if (err) {
+          makeError(res, 1007, err)
+          return console.log(err)
+        }
+        send_success(res, 'Task Card Updated')
+      }
+    )
+  })
+})
+app.post('/*/cards', (req, res) => {
+  auth(req, res, user => {
+    let sql = "SELECT * FROM 'tasks'"
+    console.log(sql)
+    db.all(sql, (err, data) => {
+      stmt = null
+      if (err) {
+        makeError(res, 1008, err)
+        return console.log(err)
+      }
+      send_success(res, 'All card where feteched', data)
+    })
   })
 })
 

@@ -10,7 +10,7 @@ const { send_success, makeError } = require('./tools/utli')
 const { join } = require('path')
 const express = require('express')
 const app = express()
-const PORT = 6767
+const PORT =  process.env.PORT || 5252
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static('public/css'))

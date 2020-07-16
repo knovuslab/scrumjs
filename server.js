@@ -6,25 +6,24 @@ const db = new sqlite3.Database(
   sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE
 )
 const { auth } = require('./tools/auth')
-const { getDate } = require('./tools/utli')
+const { send_success, makeError } = require('./tools/utli')
 const { join } = require('path')
 const express = require('express')
 const app = express()
+const PORT = 6767
 
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(express.static('public'))
-var PORT = 6767
-var stmt = db.prepare(
-  "create table IF NOT EXISTS 'tasks'(id INTEGER PRIMARY KEY AUTOINCREMENT, title varchar(32) NOT NULL, user_name varchar(32) NOT NULL, description text, progress INTEGER DEFAULT 0, created_date varchar(32), modified_date varchar(32))"
-)
-stmt.get(err => {
-  if (err) return console.log('ERROR SQL Table', err)
-})
-app.get('^/([A-zd]+)/?([A-zd]+)?/?$', function (req, res) {
+app.use(express.static('public/css'))
+app.use(express.static('public/js'))
+
+init()
+
+app.get('/*/?', function (req, res) {
   auth(req, res, user => {
     res.sendFile(join(__dirname, 'public', 'index.html'))
   })
 })
+
 app.post('/*/create/?', (req, res) => {
   console.log(req.body)
   auth(req, res, user => {
@@ -54,30 +53,21 @@ app.post('/*/create/?', (req, res) => {
     )
   })
 })
+
 app.post('/*/user', (req, res) => {
   auth(req, res, user => {
     send_success(res, 'Login in user', { username: user })
   })
 })
 
-function send_success (res, msg, data) {
-  var d = new Date()
-  res.status(200).json({
-    success: true,
-    msg: msg,
-    data: data,
-    date: getDate()
+function init () {
+  var stmt = db.prepare(
+    "create table IF NOT EXISTS 'tasks'(id INTEGER PRIMARY KEY AUTOINCREMENT, title varchar(32) NOT NULL, user_name varchar(32) NOT NULL, description text, progress INTEGER DEFAULT 0, created_date varchar(32), modified_date varchar(32))"
+  )
+  stmt.get(err => {
+    if (err) return console.log('ERROR SQL Table', err)
   })
 }
-function makeError (res, err_code, err_msg) {
-  res.status(200).json({
-    err_code: err_code,
-    err_msg: err_msg,
-    date: getDate()
-  })
-}
-
 var s = http.createServer(app)
 s.listen(PORT)
-s.timeout = 240000
 console.log(`Initializing server complete http://localhost:${PORT}`)

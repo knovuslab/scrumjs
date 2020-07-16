@@ -1,125 +1,84 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<meta charset="UTF-8" lang="en">
 	<title>scrub</title>
-	<link rel="stylesheet" href="style.css">
-	<script>
-		function openForm() {
-  document.getElementById("addForm").style.display = "block";
-}
+	<link rel="stylesheet" href="style.css"><!-- all css file inside /css can be accessed without the folder name -->
 
-function closeForm() {
-  document.getElementById("addForm").style.display = "none";
-}
-		function allowDrop(ev){
-			ev.preventDefault();
-		}
-		function drag(ev)
-		{
-			ev.dataTransfer.setData("text", ev.target.id);
-		}
-		function drop(ev)
-		{
-			ev.preventDefault();
-			// BUG HERE
-			var data = ev.dataTransfer.getData("text");
-			console.log(document.getElementById(data))
-			ev.target.appendChild(document.getElementById(data));
-		}
-		function addTask(form){
-			const task = form.elements['task'].value;
-			const description = form.elements['description'].value;
-			const status = form.elements['status'].value;
-			const container = document.getElementsByClassName(status)[0];
-			const childDiv = container.getElementsByTagName('div')[0];
-			const div = document.createElement("div");
-			div.innerHTML = `<div class="card" draggable="true" ondragstart="drag(event)">
-					<h1 class="content-title">${task}</h1>
-					<p class="content-body">${description}</p>
-				  </div>`;
-			
-			childDiv.appendChild(div);
-			
-		}
-
-		let addListeners = () => {
-			let form  = document.forms[0];
-			form.addEventListener('submit', (event) => {
-			event.preventDefault();
-			addTask(form);
-		});
-		};
-	</script>
-	
 </head>
+
 <body onload="addListeners()">
 	<div class="body">
-		<div class="add" onclick="openForm()"style="width: 40px; height: 40px; margin: 0;">+</div>
-		
-	<section class="form-popup" id="addForm">
-		<span class="closebtn cancel btn" onclick="closeForm()">&#215</span>
-		<form class="form-container">
-		  <h1 class="addTask">Add Task</h1>
-	  
-		  <input type="text" name="task" id="task" placeholder="Task" required>
-		  <textarea type="text" name="description" id="description" placeholder="Explanation"></textarea><br>
-		  <label for="status" id="status">Status</label>
-		  <select name="status" id="status" required>
-			  
-			<option value="puts">Puts</option>
-			<option value="ice-box">Ice Box</option>
-			<option value="in-progress">In Progress</option>
-			<option value="emergency">Emergency</option>
-			<option value="testing">Testing</option>
-			<option value="finished">Finished</option>
-		  </select>
-		  <button type="submit" class="btn submit">Add</button>
-		</form>
-	</section>
-	<div class="panels">
-	<div class="panel panel1 puts">
-			<h2>Puts</h2>
-			<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-puts">
-				<div class="card" draggable="true" ondragstart="drag(event)">
-					<h1 class="content-title">Title here</h1>
-					<p class="content-body">Some text about task</p>
-				  </div>
+		<div class="add" onclick="openForm()" style="width: 40px; height: 40px; margin: 0;">+</div>
+
+		<section class="form-popup" id="addForm">
+			<span class="closebtn cancel btn" onclick="closeForm()">&#215</span>
+			<form class="form-container">
+				<h1 class="addTask">Add Task</h1>
+
+				<input type="text" name="task" id="task" placeholder="Task" required>
+				<textarea type="text" name="description" id="description" placeholder="Explanation"></textarea><br>
+				<label for="status" id="status">Status</label>
+				<select name="status" id="status" required>
+
+					<option value="puts">Puts</option>
+					<option value="ice-box">Ice Box</option>
+					<option value="in-progress">In Progress</option>
+					<option value="emergency">Emergency</option>
+					<option value="testing">Testing</option>
+					<option value="finished">Finished</option>
+				</select>
+				<button type="submit" class="btn submit">Add</button>
+			</form>
+		</section>
+		<div class="panels">
+			<div class="panel panel1 puts">
+				<h2>Puts</h2>
+				<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-puts">
+					<div class="card" id="uniqueid" draggable="true" ondragstart="drag(event)">
+						<h1 class="content-title">Title here</h1>
+						<p class="content-body">Some text about task</p>
+					</div>
+				</div>
+
 			</div>
-			
-	</div>
-	<div class="panel panel2 ice-box">
-			<h2>Ice-box</h2>
-			<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-ice-box"></div>
-	</div>
-	<div class="panel panel3 in-progress">
-			<h2>In-progress</h2>
-			<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-in-progress"></div>
-	</div>
-	<div class="panel panel4 emergency">
-			<h2>Emergency</h2>
-			<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-emergency"></div>
-	</div>
-	<div class="panel panel5 testing">
-			<h2>Testing</h2>
-			<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-testing"></div>
+			<div class="panel panel2 ice-box">
+				<h2>Ice-box</h2>
+				<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-ice-box"></div>
+			</div>
+			<div class="panel panel3 in-progress">
+				<h2>In-progress</h2>
+				<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-in-progress"></div>
+			</div>
+			<div class="panel panel4 emergency">
+				<h2>Emergency</h2>
+				<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-emergency"></div>
+			</div>
+			<div class="panel panel5 testing">
+				<h2>Testing</h2>
+				<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-testing"></div>
+			</div>
+			<div class="panel panel6 finished">
+				<h2>Finsihed</h2>
+				<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-finished"></div>
+			</div>
 		</div>
-	<div class="panel panel6 finished">
-			<h2>Finsihed</h2>
-			<div ondragover="allowDrop(event)" ondrop="drop(event)" id="content-finished"></div>
-		</div>
 	</div>
-</div>
 </body>
+<script src="main.js"></script>
 <script>
-    const panels = document.querySelectorAll('.panel');
-    function toggleOpen(){
-      this.classList.toggle('open');
-    }
-    function toggleActive(e){
-      if(e.propertyName.includes('flex')) this.classList.toggle('open-active');
-    }
-    panels.forEach((panel) => panel.addEventListener('click', toggleOpen))
-    panels.forEach((panel) => panel.addEventListener('transitionend', toggleActive));
-  </script>
+	const panels = document.querySelectorAll('.panel');
+
+	function toggleOpen() {
+		this.classList.toggle('open');
+	}
+
+	function toggleActive(e) {
+		if (e.propertyName.includes('flex')) this.classList.toggle('open-active');
+	}
+	panels.forEach((panel) => panel.addEventListener('click', toggleOpen))
+	panels.forEach((panel) => panel.addEventListener('transitionend', toggleActive));
+</script>
+
 </html>

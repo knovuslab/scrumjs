@@ -41,8 +41,8 @@ function addTask(form) {
         description,
         progress: categories.indexOf(status)
     }
-    Http.open("POST", url, data);
-    Http.send();
+    Http.open("POST", url);
+    Http.send(data);
 
     Http.onreadystatechange = (e) => {
     console.log(Http.responseText)

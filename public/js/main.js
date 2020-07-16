@@ -1,3 +1,4 @@
+const categories = ['puts', 'ice-box', 'in-progress', 'emergency', 'testing', 'finished']
 function openForm() {
     document.getElementById("addForm").style.display = "block";
 }
@@ -33,6 +34,19 @@ function addTask(form) {
             <p class="content-body">${description}</p>
           </div>`;
     childDiv.appendChild(div);
+    const Http = new XMLHttpRequest();
+    const url =   window.location.href + "/create";
+    const data = {
+        title: task,
+        description,
+        progress: categories.indexOf(status)
+    }
+    Http.open("POST", url, data);
+    Http.send();
+
+    Http.onreadystatechange = (e) => {
+    console.log(Http.responseText)
+}
 }
 
 let addListeners = () => {

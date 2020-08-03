@@ -92,10 +92,11 @@ function hideLoading () {
 
 function displayCards () {
   post('/cards', (data = ''), datas => {
+    let i = isNaN(data.progress) ? 0 : data.progress
     datas.data.forEach(data => {
       const task = data.title
       const description = data.description
-      const status = categories[data.progress]
+      const status = categories[i]
       const childDiv = document.getElementById('content-' + status)
       console.log(status)
       console.log(childDiv)

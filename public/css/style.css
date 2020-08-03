@@ -279,3 +279,7 @@ input, textarea{
     font-family: sans-serif;
     font-size: small;
   }
+  .small-close-btn{
+    font-size: 50;
+    position: static;
+  }

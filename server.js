@@ -109,7 +109,6 @@ app.post('/*/update_card/?', (req, res) => {
     console.log(sql)
     var stmt = db.prepare(sql)
     stmt.get(
-      sql,
       [
         req.body.title,
         req.body.description,
@@ -125,6 +124,25 @@ app.post('/*/update_card/?', (req, res) => {
         send_success(res, 'Task Card Updated')
       }
     )
+  })
+})
+app.post('/*/delete_card/?', (req, res) => {
+  auth(req, res, user => {
+    if (!req.body.id) {
+      makeError(res, 1005, 'id of the card  is required')
+      return
+    }
+
+    let sql = 'DELETE FROM tasks where id=?'
+    console.log(sql)
+    var stmt = db.prepare(sql)
+    stmt.get(req.body.id, err => {
+      if (err) {
+        makeError(res, 1007, err)
+        return console.log(err)
+      }
+      send_success(res, 'Task Card deleted')
+    })
   })
 })
 app.post('/*/cards/?', (req, res) => {

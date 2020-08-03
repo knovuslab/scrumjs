@@ -34,7 +34,11 @@ function drop (ev) {
     res => {}
   )
 }
-
+function deleteTask (id) {
+  post('/delete_card', `id=${id}`, res => {
+    window.location.reload()
+  })
+}
 function addTask () {
   const task = document.getElementById('task').value
   const description = document.getElementById('description').value
@@ -52,6 +56,7 @@ function addTask () {
         `<div class="card" draggable="true" id="` +
         res.data.id +
         `" ondragstart="drag(event)">
+        <span class="closebtn cancel btn small-close-btn" onclick="deleteTask(${res.data.id})">&#215;</span>
             <h1 class="content-title">${task}</h1>
             <p class="content-body">${description}</p>
           </div>`
@@ -92,10 +97,9 @@ function hideLoading () {
 
 function displayCards () {
   post('/cards', (data = ''), datas => {
-    
     datas.data.forEach(data => {
       let i = isNaN(data.progress) ? 0 : data.progress
-    console.log('Cards progress ' + i)
+      console.log('Cards progress ' + i)
       const task = data.title
       const description = data.description
       const status = categories[i]
@@ -107,6 +111,7 @@ function displayCards () {
         `<div class="card" draggable="true" id="` +
         data.id +
         `" ondragstart="drag(event)">
+        <span class="closebtn cancel btn" onclick="deleteTask(${data.id})">&#215;</span>
                   <h1 class="content-title">${task}</h1>
                   <p class="content-body">${description}</p>
                   <i><em><small>${data.user_name}</small></em></i></br>

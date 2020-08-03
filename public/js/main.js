@@ -111,7 +111,7 @@ function displayCards () {
         `<div class="card" draggable="true" id="` +
         data.id +
         `" ondragstart="drag(event)">
-        <span class="closebtn cancel btn" onclick="deleteTask(${data.id})">&#215;</span>
+        <span class="closebtn cancel btn small-close-btn" onclick="deleteTask(${data.id})">&#215;</span>
                   <h1 class="content-title">${task}</h1>
                   <p class="content-body">${description}</p>
                   <i><em><small>${data.user_name}</small></em></i></br>
